@@ -37,6 +37,7 @@ export default function Home() {
     const history = useHistory();
     const [started, setStarted] = useState(false);
     const [teamId, setTeamId] = useState('');
+    const [userName, setUserName] = useState('');
 
     function handleClick() {
         setStarted(true);
@@ -44,24 +45,36 @@ export default function Home() {
     function handleChange(e) {
         setTeamId(e.target.value);
     }
+    function handleChangeMyName(e) {
+        setUserName(e.target.value);
+    }
     function handleEnterKey(e) {
         if (e.key === 'Enter') {
-            joinTheTeam();
+            started ? joinTheTeam() : setStarted(true);
         }
     }
     function joinTheTeam() {
-        history.push(`/team/${teamId}`);
+        history.push(`/team/${teamId}/${userName}`);
     }
 
     return (
         <Box className={styles.home}>
             <h2 className={styles.title}>T E L E P A T H Y</h2>
             <h3>
-                {!started &&
+                {!started && 
+                <>
                     <Button
                         className={styles.startButton}
-                        onClick={handleClick}>START
-                    </Button>}
+                        onClick={handleClick}>START WITH
+                    </Button>
+                    <TextField
+                        label="MY NAME"
+                        className={styles.joinTextField}
+                        onChange={handleChangeMyName}
+                        onKeyPress={handleEnterKey}
+                        required
+                    />
+                </>}
                 {started && <div>
                     <Button
                         className={styles.joinButton}

@@ -11,7 +11,7 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/team/:teamId">
+        <Route path="/team/:teamId/:userName">
           <Main />
         </Route>
         <Route path="/">
