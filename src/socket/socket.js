@@ -8,96 +8,96 @@ const state = {
     userName: ''
 }
 
-const sock = new SockJS('https://192.168.0.4:8443/ws');
-const stomp = Stomp.over(sock);
+export default class Socket {
+    constructor(id, teamId, userName, addMember, removeMember) {
+        this.stomp = Stomp.over(new SockJS('https://192.168.0.4:8443/ws'));
 
-function init(id, teamId, userName) {
-    state.id = id;
-    state.teamId = teamId;
-    state.userName = userName;
-    stomp.connect({
-        teamId,
-        userName
-    }, onConnect, onError);
-}
+        state.id = id;
+        state.teamId = teamId;
+        state.userName = userName;
 
-function onConnect() {
-    stomp.subscribe(`/topic/${state.teamId}`, onPublicMessageReceived);
-    stomp.subscribe(`/topic/${state.id}`, onPrivateMessageReceived);
-    stomp.subscribe(`/topic/${state.teamId}/${state.id}`, onMessageReceived);
-    stomp.send(`/app/signal.join.${state.teamId}`, {},
-        JSON.stringify({ id: state.id, teamId: state.teamId, userName: state.userName, type: 'JOIN', message: 'joinUser' }));
-}
+        this.addMember = addMember;
+        this.removeMember = removeMember;
 
-function onError(error) {
-    console.error(error);
-}
-
-function onPublicMessageReceived(event) {
-    const data = JSON.parse(event.body);
-    if (data.id === state.id) return;
-
-    switch (data.type) {
-        case 'JOIN':
-            console.log(data);
-            break;
-        case 'LEAVE':
-
-            break;
+        this.stomp.connect({
+            teamId,
+            userName
+        }, () => { this.onConnect() }, this.onError);
     }
-}
 
-function onPrivateMessageReceived(event) {
-    const data = JSON.parse(event.body);
-    switch (data.type) {
-        case 'USERLIST':
-            console.log(data);
-            // data.message.forEach(user => {
-            //     addMember(user.id, user.userName);
-            // });
-            break;
+    onConnect() {
+        this.stomp.subscribe(`/topic/${state.teamId}`, event => { this.onPublicMessageReceived(event) });
+        this.stomp.subscribe(`/topic/${state.id}`, event => { this.onPrivateMessageReceived(event) } );
+        this.stomp.subscribe(`/topic/${state.teamId}/${state.id}`, event => { this.onMessageReceived(event) });
+        this.stomp.send(`/app/signal.join.${state.teamId}`, {},
+            JSON.stringify({ id: state.id, teamId: state.teamId, userName: state.userName, type: 'JOIN', message: 'joinUser' }));
     }
-}
 
-
-function onMessageReceived(event) {
-    const data = JSON.parse(event.body);
-    if (data.id == state.id) return;
-
-    switch (data.type) {
-        case 'OFFER':
-            rtc.receiveOffer(data.id, data.message)
-                .then((id, sessionDescription) => {
-                    sendMessageToUser('ANSWER', id, sessionDescription);
-                })
-            break;
-        case 'ANSWER':
-            rtc.receiveAnswer(data.id, data.message);
-            break;
-        case 'CANDIDATE':
-            rtc.addIceCandidate(data.id, data.message);
-            break;
+    onError(error) {
+        console.error(error);
     }
-}
 
-function sendMessageToUser(type, target, message) {
-    const messageObject = {
-        id: state.id,
-        type: type,
-        message: message
-    };
-    stomp.send(`/topic/${state.teamId}/${target}`, {}, JSON.stringify(messageObject));
-}
+    onPublicMessageReceived(event) {
+        const data = JSON.parse(event.body);
+        if (data.id === state.id) return;
 
-function sendMessageToServer(type, message) {
-    const messageObject = {
-        id: state.id,
-        type: type,
-        message: message
-    };
-    stomp.send(`/app/`)
-}
+        switch (data.type) {
+            case 'JOIN':
+                console.log(data);
+                break;
+            case 'LEAVE':
 
-export default {
-    init
+                break;
+        }
+    }
+
+    onPrivateMessageReceived(event) {
+        const data = JSON.parse(event.body);
+        switch (data.type) {
+            case 'USERLIST':
+                data.message.forEach(user => {
+                    this.addMember(user.id, user.userName);
+                });
+                break;
+        }
+    }
+
+
+    onMessageReceived(event) {
+        const data = JSON.parse(event.body);
+        if (data.id == state.id) return;
+
+        switch (data.type) {
+            case 'OFFER':
+                rtc.receiveOffer(data.id, data.message)
+                    .then((id, sessionDescription) => {
+                        this.sendMessageToUser('ANSWER', id, sessionDescription);
+                    })
+                break;
+            case 'ANSWER':
+                rtc.receiveAnswer(data.id, data.message);
+                break;
+            case 'CANDIDATE':
+                rtc.addIceCandidate(data.id, data.message);
+                break;
+        }
+    }
+
+    sendMessageToUser(type, target, message) {
+        const messageObject = {
+            id: state.id,
+            type: type,
+            message: message
+        };
+        this.stomp.send(`/topic/${state.teamId}/${target}`, {}, JSON.stringify(messageObject));
+    }
+
+    sendMessageToServer(type, message) {
+        const messageObject = {
+            id: state.id,
+            type: type,
+            message: message
+        };
+        this.stomp.send(`/app/`)
+    }
 }

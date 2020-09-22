@@ -8,8 +8,8 @@ export default function Member({ memberList }) {
     return <ul>
         {memberList.map(member =>
             (<li onClick={() => { handleClickMember(member) } }>
-                <p>member.userId</p>
-                <p>member.userName</p>
+                <p>{member.userId}</p>
+                <p>{member.userName}</p>
             </li>))}
     </ul>
 }

@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Member from '../component/Member';
-import socket from '../socket/socket';
+import Socket from '../socket/Socket';
 import rtc from '../rtc/rtc';
 import utils from '../utils/utils';
+
+// 단 1회만 호출하도록 해야함 (useMount 사용등으로)
+const socket = new Socket(userId, teamId, userName, addMember, removeMember);
 
 export default function Main() {
     let { teamId, userName } = useParams();
     const userId = utils.getNewId();
-    const [memberList, setMemberList] = useState([]);
-
-    socket.init(userId, teamId, userName);
+    const [memberList, setMemberList] = useState([{userId, userName}]);
 
     function addMember(userId, userName) {
         setMemberList(memberList.concat({

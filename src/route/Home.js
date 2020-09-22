@@ -63,10 +63,6 @@ export default function Home() {
             <h3>
                 {!started && 
                 <>
-                    <Button
-                        className={styles.startButton}
-                        onClick={handleClick}>START WITH
-                    </Button>
                     <TextField
                         label="MY NAME"
                         className={styles.joinTextField}
@@ -74,6 +70,11 @@ export default function Home() {
                         onKeyPress={handleEnterKey}
                         required
                     />
+                    <br/><br/>
+                    <Button
+                        className={styles.startButton}
+                        onClick={handleClick}>START
+                    </Button>
                 </>}
                 {started && <div>
                     <Button
