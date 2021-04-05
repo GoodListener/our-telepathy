@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 
-export default function Member({ memberList }) {
+export default function Member({ memberList, offerToMember }) {
     
-    function handleClickMember(member) {
-        console.log(member);
+    const videoRef = useRef();
+
+    function addStream(stream) {
+        if (stream) {
+            videoRef.current.srcObject = stream;
+            videoRef.current.autoplay = 'autoplay';
+        }
     }
+
     return <ul>
         {memberList.map(member =>
-            (<li onClick={() => { handleClickMember(member) } }>
-                <p>{member.userId}</p>
-                <p>{member.userName}</p>
+            (<li key={member.key} onDoubleClick={() => { offerToMember(member) } }>
+                <p>{member.id}</p>
+                <p>{member.name}</p>
+                <video ref={videoRef} onClick={addStream(member.stream)}></video>
             </li>))}
     </ul>
 }
