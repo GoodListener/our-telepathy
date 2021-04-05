@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/our-telepathy/static/css/main.5ecd60fb.chunk.css",
+    "main.js": "/our-telepathy/static/js/main.163b9277.chunk.js",
+    "main.js.map": "/our-telepathy/static/js/main.163b9277.chunk.js.map",
+    "runtime-main.js": "/our-telepathy/static/js/runtime-main.b0182171.js",
+    "runtime-main.js.map": "/our-telepathy/static/js/runtime-main.b0182171.js.map",
+    "static/js/2.65ddb39c.chunk.js": "/our-telepathy/static/js/2.65ddb39c.chunk.js",
+    "static/js/2.65ddb39c.chunk.js.map": "/our-telepathy/static/js/2.65ddb39c.chunk.js.map",
+    "index.html": "/our-telepathy/index.html",
+    "precache-manifest.eec9e1a347b4bbb85a8d5c7d3384a296.js": "/our-telepathy/precache-manifest.eec9e1a347b4bbb85a8d5c7d3384a296.js",
+    "service-worker.js": "/our-telepathy/service-worker.js",
+    "static/css/main.5ecd60fb.chunk.css.map": "/our-telepathy/static/css/main.5ecd60fb.chunk.css.map",
+    "static/js/2.65ddb39c.chunk.js.LICENSE.txt": "/our-telepathy/static/js/2.65ddb39c.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b0182171.js",
+    "static/js/2.65ddb39c.chunk.js",
+    "static/css/main.5ecd60fb.chunk.css",
+    "static/js/main.163b9277.chunk.js"
+  ]
+}
