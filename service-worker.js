@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/our-telepathy/precache-manifest.a6afd45a0e5b788ad467cae2f207c474.js"
+  "/our-telepathy/precache-manifest.ad495823ef8c618bc38e554b3555568e.js"
 );
 
 self.addEventListener('message', (event) => {
