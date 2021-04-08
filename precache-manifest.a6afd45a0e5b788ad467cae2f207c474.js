@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "e336008752f2b6b54fc4c2d1a8e7a020",
+    "revision": "e3535af5c047b3bcee0784acf301ff88",
     "url": "/our-telepathy/index.html"
   },
   {
-    "revision": "be21274d47ab197056db",
+    "revision": "da8a533a5a268ed77dda",
     "url": "/our-telepathy/static/css/main.5ecd60fb.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/our-telepathy/static/js/2.aae9f096.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "be21274d47ab197056db",
-    "url": "/our-telepathy/static/js/main.54bc8fcf.chunk.js"
+    "revision": "da8a533a5a268ed77dda",
+    "url": "/our-telepathy/static/js/main.e5f8701d.chunk.js"
   },
   {
     "revision": "54202b9159d2389c8e09",
