@@ -6,9 +6,8 @@ import rtc from '../rtc/rtc';
 import utils from '../utils/utils';
 import ChatInput from '../component/ChatInput';
 import Chat from '../component/Chat';
+import MyVideo from '../component/MyVideo'
 import { Button } from '@material-ui/core';
-
-window.remoteStream = {};
 
 export default function Main() {
     const { teamId, userName } = useParams();
@@ -20,11 +19,22 @@ export default function Main() {
     });
     const [chatList, setChatList] = useState([]);
     const [memberList, setMemberList] = useState([]);
+    const [myStream, setMyStream] = useState(null);
+
+    
+    useEffect(() => {
+        async function getMyStream() {
+            const stream = await rtc.getUserMedia();
+            console.log(stream);
+            setMyStream(stream);
+        }
+        getMyStream();
+    }, []);
 
     useEffect(() => {
         socketManager.join(myInfo);
     }, []);
-    
+
     useEffect(() => {
         socketManager.onJoin(addMember, removeMember);
 
@@ -33,10 +43,6 @@ export default function Main() {
         }
     });
 
-    // useEffect(() => {
-    //     socketManager.onJoin(addMember, removeMember);
-    // }, []);
-    
     useEffect(() => {
         socketManager.onChatMessage(receiveChatMessage);
     }, []);
@@ -49,6 +55,9 @@ export default function Main() {
         }
     });
 
+    /**
+     * @param {Member} member
+     */
     function addMember(member) {
         setMemberList(memberList => [...memberList, member]);
     }
@@ -92,14 +101,14 @@ export default function Main() {
         switch (data.type) {
             case 'offer':
                 rtc.receiveOffer(data.id, data.message)
-                .then(pc => {
-                    pc.onicecandidate = (event) => { handleIceCandidate(data.key, event) };
-                    pc.onaddstream = (event) => { handleRemoteStreamAdded(data.key, event); };
-                    pc.onremovestream = handleRemoteStreamRemoved;
-                    rtc.createAnswer(data.id).then(sessionDescription => {
-                        socketManager.sendMessageToUser('answer', data.key, sessionDescription);
+                    .then(pc => {
+                        pc.onicecandidate = (event) => { handleIceCandidate(data.key, event) };
+                        pc.onaddstream = (event) => { handleRemoteStreamAdded(data.key, event); };
+                        pc.onremovestream = handleRemoteStreamRemoved;
+                        rtc.createAnswer(data.id).then(sessionDescription => {
+                            socketManager.sendMessageToUser('answer', data.key, sessionDescription);
+                        })
                     })
-                })
                 break;
             case 'answer':
                 rtc.receiveAnswer(data.id, data.message);
@@ -122,9 +131,6 @@ export default function Main() {
     }
 
     function handleRemoteStreamAdded(key, event) {
-        console.log('handleRemoteStreamAdded');
-        console.log(event.stream);
-        window.remoteStream[key] = event.stream;
         const member = [...memberList].find(member => member.key === key);
         if (member) {
             member.stream = event.stream;
@@ -152,9 +158,12 @@ export default function Main() {
     return (
         <div>
             <p>{teamId}팀과 함께하는 중</p>
-            <Link to="/">첫 페이지로 가기</Link>
+            <Link to="">첫 페이지로 가기</Link>
             <Button
-                onClick={() => {checkMemberList()}}>MemberListCheck</Button>
+                onClick={() => { checkMemberList() }}>MemberListCheck</Button>
+            <MyVideo
+                stream={myStream}
+            ></MyVideo>
             <Member
                 memberList={memberList}
                 offerToMember={offerToMember}

@@ -9,7 +9,7 @@ import Home from './route/Home';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/our-telepathy">
       <Switch>
         <Route path="/team/:teamId/:userName">
           <Main />

@@ -1,11 +1,7 @@
-import socketManager from "../socket/socketManager";
-
 const state = {
     pcList: {},
     stream: null
 }
-
-const remote = []
 
 const pcInfo = {
     'iceServers': [
@@ -18,10 +14,6 @@ const pcInfo = {
     'DtlsSrtpKeyAgreement': true
 
 };
-
-function init() {
-
-}
 
 async function getUserMedia() {
     if (state.stream) {
@@ -80,7 +72,7 @@ function receiveOffer(id, offer) {
 
 function createAnswer(id) {
     return new Promise(res => {
-        if (state.pcList[id].connectionState != "connected") {
+        if (state.pcList[id].connectionState !== "connected") {
             state.pcList[id].createAnswer(sessionDescription => {
                 state.pcList[id].setLocalDescription(sessionDescription);
                 res(sessionDescription);
@@ -115,6 +107,7 @@ function handleError(error) {
 
 
 export default {
+    getUserMedia,
     createOffer,
     createAnswer,
     receiveOffer,

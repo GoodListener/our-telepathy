@@ -1,5 +1,4 @@
 import { io } from 'socket.io-client';
-import rtc from '../rtc/rtc';
 
 const state = {
     key: '',

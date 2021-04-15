@@ -15,6 +15,7 @@ export default function Member({ memberList, offerToMember }) {
         {memberList.map(member =>
             (<li key={member.key} onDoubleClick={() => { offerToMember(member) } }>
                 <p>{member.id}</p>
+                <p>{member.status}</p>
                 <p>{member.name}</p>
                 <video ref={videoRef} onClick={addStream(member.stream)}></video>
             </li>))}

@@ -54,7 +54,7 @@ export default function Home() {
         }
     }
     function joinTheTeam() {
-        history.push(`/team/${teamId}/${userName}`);
+        history.push(`./team/${teamId}/${userName}`);
     }
 
     return (
