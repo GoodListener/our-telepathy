@@ -1,35 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import Member from '../component/Member';
+import { useParams } from 'react-router-dom';
+import MemberList from '../component/MemberList';
+import MyInfoBox from '../component/MyInfoBox';
 import socketManager from '../socket/socketManager';
 import rtc from '../rtc/rtc';
 import utils from '../utils/utils';
-import ChatInput from '../component/ChatInput';
-import Chat from '../component/Chat';
-import MyVideo from '../component/MyVideo'
-import { Button } from '@material-ui/core';
+import { makeStyles, Box, Container, Grid, Typography } from '@material-ui/core';
+import MyWorkBox from '../component/MyWorkBox';
+
+const useStyles = makeStyles({
+    mainBox: {
+        backgroundColor: "#F1F3F6",
+        padding: "10px 20px"
+    }
+})
 
 export default function Main() {
+    const styles = useStyles();
     const { teamId, userName } = useParams();
     const [myInfo, setMyInfo] = useState({
         key: '',
         id: utils.getNewId(),
         name: userName,
-        team: teamId
+        team: teamId,
+        status: 'working'
     });
     const [chatList, setChatList] = useState([]);
     const [memberList, setMemberList] = useState([]);
-    const [myStream, setMyStream] = useState(null);
-
-    
-    useEffect(() => {
-        async function getMyStream() {
-            const stream = await rtc.getUserMedia();
-            console.log(stream);
-            setMyStream(stream);
-        }
-        getMyStream();
-    }, []);
 
     useEffect(() => {
         socketManager.join(myInfo);
@@ -136,15 +133,6 @@ export default function Main() {
             member.stream = event.stream;
             updateMember(member);
         }
-        // const video = document.createElement('video');
-        // video.id = userId;
-        // video.srcObject = event.stream;
-        // video.autoplay = 'autoplay';
-        // document.body.append(video);
-        // remote.push({
-        //     video: video,
-        //     stream: event.stream
-        // });
     }
 
     function handleRemoteStreamRemoved(event) {
@@ -156,24 +144,28 @@ export default function Main() {
     }
 
     return (
-        <div>
-            <p>{teamId}팀과 함께하는 중</p>
-            <Link to="">첫 페이지로 가기</Link>
-            <Button
-                onClick={() => { checkMemberList() }}>MemberListCheck</Button>
-            <MyVideo
-                stream={myStream}
-            ></MyVideo>
-            <Member
+        <Container maxWidth="md">
+            <Grid container spacing={3} className={styles.mainBox}>
+                <Grid item xs={12} md={12}>
+                    <Typography>TeleTele</Typography>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <MyInfoBox
+                        myInfo={myInfo}
+                        setMyInfo={setMyInfo}
+                    ></MyInfoBox>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <MyWorkBox
+
+                    >
+                    </MyWorkBox>
+                </Grid>
+            </Grid>
+            <MemberList className={styles.mainBox}
                 memberList={memberList}
                 offerToMember={offerToMember}
-            ></Member>
-            <ChatInput
-                sendMessage={(user, message) => { sendChatMessage(user, message) }}
-            ></ChatInput>
-            <Chat
-                chatList={chatList}
-            ></Chat>
-        </div>
+            ></MemberList>
+        </Container>
     );
 }

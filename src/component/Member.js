@@ -1,23 +1,38 @@
-import React, { useRef } from 'react';
+import { Avatar, Button, ButtonGroup, Card, CardContent, CardHeader, Chip, Grid, makeStyles, Typography } from '@material-ui/core';
+import { deepOrange } from '@material-ui/core/colors';
+import React from 'react';
 
-export default function Member({ memberList, offerToMember }) {
-    
-    const videoRef = useRef();
-
-    function addStream(stream) {
-        if (stream) {
-            videoRef.current.srcObject = stream;
-            videoRef.current.autoplay = 'autoplay';
-        }
+const useStyles = makeStyles((theme) => ({
+    orange: {
+        color: theme.palette.getContrastText(deepOrange[500]),
+        backgroundColor: deepOrange[500],
+    },
+    cardHeader: {
+        alignItems: "center"
+    },
+    cardContent: {
+        display: "flex",
+        justifyContent: "space-between"
+    },
+    cardStatusChip: {
+        alignSelf: "center"
     }
+}));
 
-    return <ul>
-        {memberList.map(member =>
-            (<li key={member.key} onDoubleClick={() => { offerToMember(member) } }>
-                <p>{member.id}</p>
-                <p>{member.status}</p>
-                <p>{member.name}</p>
-                <video ref={videoRef} onClick={addStream(member.stream)}></video>
-            </li>))}
-    </ul>
+export default function Member({member}) {
+    const styles = useStyles();
+
+    return <Grid item xs={3} md={3}>
+        <Card>
+            <CardHeader
+                className={styles.cardHeader}
+                avatar={<Avatar className={styles.orange}>O</Avatar>}
+                title={member.name}
+                action={<Chip className={styles.cardStatusChip} color="primary" label="업무중" />}
+            >
+            </CardHeader>
+            <CardContent className={styles.cardContent}>
+            </CardContent>
+        </Card>
+    </Grid>
 }

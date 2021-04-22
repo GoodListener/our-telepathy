@@ -19,7 +19,7 @@ async function getUserMedia() {
     if (state.stream) {
         return state.stream;
     }
-    state.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    state.stream = await navigator.mediaDevices.getUserMedia({ audio: true })
     return state.stream;
 }
 
