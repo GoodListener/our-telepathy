@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/our-telepathy/static/css/main.5ecd60fb.chunk.css",
-    "main.js": "/our-telepathy/static/js/main.dac3c351.chunk.js",
-    "main.js.map": "/our-telepathy/static/js/main.dac3c351.chunk.js.map",
+    "main.js": "/our-telepathy/static/js/main.d8c5e61f.chunk.js",
+    "main.js.map": "/our-telepathy/static/js/main.d8c5e61f.chunk.js.map",
     "runtime-main.js": "/our-telepathy/static/js/runtime-main.b0182171.js",
     "runtime-main.js.map": "/our-telepathy/static/js/runtime-main.b0182171.js.map",
-    "static/js/2.aae9f096.chunk.js": "/our-telepathy/static/js/2.aae9f096.chunk.js",
-    "static/js/2.aae9f096.chunk.js.map": "/our-telepathy/static/js/2.aae9f096.chunk.js.map",
+    "static/js/2.69caeba6.chunk.js": "/our-telepathy/static/js/2.69caeba6.chunk.js",
+    "static/js/2.69caeba6.chunk.js.map": "/our-telepathy/static/js/2.69caeba6.chunk.js.map",
     "index.html": "/our-telepathy/index.html",
-    "precache-manifest.ad495823ef8c618bc38e554b3555568e.js": "/our-telepathy/precache-manifest.ad495823ef8c618bc38e554b3555568e.js",
+    "precache-manifest.4a8e37bfae6ebc08895a3252d37f7d5b.js": "/our-telepathy/precache-manifest.4a8e37bfae6ebc08895a3252d37f7d5b.js",
     "service-worker.js": "/our-telepathy/service-worker.js",
     "static/css/main.5ecd60fb.chunk.css.map": "/our-telepathy/static/css/main.5ecd60fb.chunk.css.map",
-    "static/js/2.aae9f096.chunk.js.LICENSE.txt": "/our-telepathy/static/js/2.aae9f096.chunk.js.LICENSE.txt"
+    "static/js/2.69caeba6.chunk.js.LICENSE.txt": "/our-telepathy/static/js/2.69caeba6.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.b0182171.js",
-    "static/js/2.aae9f096.chunk.js",
+    "static/js/2.69caeba6.chunk.js",
     "static/css/main.5ecd60fb.chunk.css",
-    "static/js/main.dac3c351.chunk.js"
+    "static/js/main.d8c5e61f.chunk.js"
   ]
 }
