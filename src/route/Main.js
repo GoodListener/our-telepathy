@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import MemberList from '../component/MemberList';
 import MyInfoBox from '../component/MyInfoBox';
 import socketManager from '../socket/socketManager';
 import rtc from '../rtc/rtc';
-import utils from '../utils/utils';
-import { makeStyles, Box, Container, Grid, Typography } from '@material-ui/core';
+import { makeStyles, Container, Grid, Typography } from '@material-ui/core';
 import MyWorkBox from '../component/MyWorkBox';
 
 const useStyles = makeStyles({
@@ -18,31 +17,6 @@ const useStyles = makeStyles({
 export default function Main() {
     const styles = useStyles();
     const { teamId, userName } = useParams();
-    const [myInfo, setMyInfo] = useState({
-        key: '',
-        id: utils.getNewId(),
-        name: userName,
-        team: teamId,
-        status: 'working'
-    });
-    const [chatList, setChatList] = useState([]);
-    const [memberList, setMemberList] = useState([]);
-
-    useEffect(() => {
-        socketManager.join(myInfo);
-    }, []);
-
-    useEffect(() => {
-        socketManager.onJoin(addMember, removeMember);
-
-        return () => {
-            socketManager.offJoin();
-        }
-    });
-
-    useEffect(() => {
-        socketManager.onChatMessage(receiveChatMessage);
-    }, []);
 
     useEffect(() => {
         socketManager.onMessageReceived(receiveDataMessage);
@@ -52,58 +26,26 @@ export default function Main() {
         }
     });
 
-    /**
-     * @param {Member} member
-     */
-    function addMember(member) {
-        setMemberList(memberList => [...memberList, member]);
-    }
-
-    function updateMember(newMember) {
-        const index = [...memberList].findIndex(member => {
-            return member.key === newMember.key
-        });
-        let newMemberList = [...memberList];
-        newMemberList[index] = newMember;
-        setMemberList(() => newMemberList);
-    }
-
-    function removeMember(key) {
-        setMemberList(memberList => memberList.filter(member => {
-            return member.key !== key;
-        }));
-    }
-
-    function sendChatMessage(message) {
-        const user = socketManager.getMyInfo();
-        socketManager.sendChatMessageToAll(user, message);
-    }
-
-    function receiveChatMessage(chat) {
-        setChatList(chatList => [...chatList, chat]);
-    }
-
     function offerToMember(user) {
-        rtc.createOffer(user.id, user.key)
+        rtc.createOffer(user.id)
             .then(({ pc, sessionDescription }) => {
-                pc.onicecandidate = (event) => { handleIceCandidate(user.key, event) };
-                pc.onaddstream = (event) => { handleRemoteStreamAdded(user.key, event); };
+                pc.onicecandidate = (event) => { handleIceCandidate(user.id, event) };
+                pc.onaddstream = (event) => { handleRemoteStreamAdded(user.id, event); };
                 pc.onremovestream = handleRemoteStreamRemoved;
-                socketManager.sendMessageToUser('offer', user.key, sessionDescription);
+                socketManager.sendMessageToUser('offer', user.id, sessionDescription);
             });
     }
-
 
     function receiveDataMessage(data) {
         switch (data.type) {
             case 'offer':
                 rtc.receiveOffer(data.id, data.message)
                     .then(pc => {
-                        pc.onicecandidate = (event) => { handleIceCandidate(data.key, event) };
-                        pc.onaddstream = (event) => { handleRemoteStreamAdded(data.key, event); };
+                        pc.onicecandidate = (event) => { handleIceCandidate(data.id, event) };
+                        pc.onaddstream = (event) => { handleRemoteStreamAdded(data.id, event); };
                         pc.onremovestream = handleRemoteStreamRemoved;
                         rtc.createAnswer(data.id).then(sessionDescription => {
-                            socketManager.sendMessageToUser('answer', data.key, sessionDescription);
+                            socketManager.sendMessageToUser('answer', data.id, sessionDescription);
                         })
                     })
                 break;
@@ -121,26 +63,23 @@ export default function Main() {
         }
     }
 
-    function handleIceCandidate(key, event) {
+    function handleIceCandidate(id, event) {
         if (event.candidate) {
-            socketManager.sendMessageToUser('candidate', key, event.candidate);
+            socketManager.sendMessageToUser('candidate', id, event.candidate);
         }
     }
 
-    function handleRemoteStreamAdded(key, event) {
-        const member = [...memberList].find(member => member.key === key);
-        if (member) {
-            member.stream = event.stream;
-            updateMember(member);
-        }
+    function handleRemoteStreamAdded(id, event) {
+        console.log(id, event);
+        // const member = [...memberList].find(member => member.id === id);
+        // if (member) {
+        //     member.stream = event.stream;
+        //     updateMember(member);
+        // }
     }
 
     function handleRemoteStreamRemoved(event) {
         console.log(event);
-    }
-
-    function checkMemberList() {
-        console.log(memberList);
     }
 
     return (
@@ -151,8 +90,8 @@ export default function Main() {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <MyInfoBox
-                        myInfo={myInfo}
-                        setMyInfo={setMyInfo}
+                        userName={userName}
+                        teamId={teamId}
                     ></MyInfoBox>
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -163,7 +102,6 @@ export default function Main() {
                 </Grid>
             </Grid>
             <MemberList className={styles.mainBox}
-                memberList={memberList}
                 offerToMember={offerToMember}
             ></MemberList>
         </Container>

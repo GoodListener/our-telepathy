@@ -1,43 +1,39 @@
 import { io } from 'socket.io-client';
 
-const state = {
-    key: '',
-    id: '',
-    team: '',
-    name: ''
-}
-
 class SocketManager {
     constructor() {
-        this.socket = io("https://flawless-psyche-307902.du.r.appspot.com");
+        // this.socket = io("https://flawless-psyche-307902.du.r.appspot.com");
+        this.socket = io("https://localhost:8080");
+        this.myInfo = null;
     }
 
-    join(userInfo) {
-        state.id = userInfo.id;
-        state.team = userInfo.team;
-        state.name = userInfo.name;
-        this.socket.emit("join", userInfo);
+    join(member) {
+        this.myInfo = member;
+        this.socket.emit("join", member);
     }
 
+    /**
+     * 
+     * @param {Function} addMember 
+     * @param {Function} removeMember 
+     */
     onJoin(addMember, removeMember) {
         this.socket.on('myInfo', userInfo => {
-            state.key = userInfo.key;
+            this.myInfo.id = userInfo.id;
         })
 
         this.socket.on('userList', userList => {
             userList.forEach(userInfo => {
-                console.log(userInfo);
                 addMember(userInfo);
             })
         })
 
         this.socket.on("joinedUser", member => {
-            console.log(member);
             addMember(member);
         });
 
-        this.socket.on("leavedUser", key => {
-            removeMember(key);
+        this.socket.on("leavedUser", id => {
+            removeMember(id);
         });
     }
 
@@ -49,15 +45,24 @@ class SocketManager {
     }
 
     getMyInfo() {
-        return state;
+        return this.myInfo;
     }
 
-    sendChatMessageToAll(user, message) {
-        this.socket.emit("chatMessageToAll", user, message);
+    /**
+     * 
+     * @param {Member} member 
+     */
+    changeStatus(member) {
+        this.socket.emit('changeStatus', member);
+    }
+    
+
+    onChangeStatus(onChangeStatus) {
+        this.socket.on('onChangeStatus', onChangeStatus);
     }
 
-    onChatMessage(onChatMessage) {
-        this.socket.on('receiveChatMessage', onChatMessage);
+    offChangeStatus() {
+        this.socket.off('onChangeStatus');
     }
 
     onError(error) {
@@ -72,14 +77,13 @@ class SocketManager {
         this.socket.off('receivePrivateMessage')
     }
 
-    sendMessageToUser(type, targetkey, message) {
+    sendMessageToUser(type, targetId, message) {
         const messageObject = {
-            id: state.id, // sender id
-            key: state.key, // sender key
+            id: this.myInfo.id, // sender id
             type: type,
             message: message
         };
-        this.socket.emit('privateMessage', targetkey, messageObject);
+        this.socket.emit('privateMessage', targetId, messageObject);
     }
 }
 

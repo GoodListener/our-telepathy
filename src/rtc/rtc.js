@@ -96,9 +96,6 @@ function handleOnIceConnectionStateChange(id, event) {
     if (state.pcList[id].connectionState === "connected") {
         console.log('connected');
     }
-    // if (peerConnection.connectionState === 'connected') {
-    //     // Peers connected!
-    // }
 }
 
 function handleError(error) {

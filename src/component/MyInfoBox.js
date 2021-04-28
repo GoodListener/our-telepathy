@@ -1,6 +1,10 @@
-import { Avatar, Button, ButtonGroup, Card, CardContent, CardHeader, Chip, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Avatar, Button, Card, CardContent, CardHeader, Chip, Grid, makeStyles } from '@material-ui/core';
 import { deepOrange } from '@material-ui/core/colors';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import socketManager from '../socket/socketManager';
+import { changeStatus, setMyInfo } from '../store/myInfo/myInfo.reducer'
+import utils from '../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
     orange: {
@@ -28,17 +32,31 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function MyInfoBox({ myInfo, setMyInfo }) {
+export default function MyInfoBox({ teamId, userName }) {
     const styles = useStyles();
     const [label, setLabel] = useState('');
     const [selectColor, setSelectColor] = useState('primary');
+    const myInfo = useSelector(state => state.myInfo);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        changeMyStatus(myInfo.status);
-    }, []);
+        dispatch(setMyInfo({
+            id: myInfo.id ? myInfo.id : utils.getNewId(),
+            name: userName,
+            team: teamId,
+            status: myInfo.status ? myInfo.status : 'working'
+        }))
 
-    function changeMyStatus (status) {
-        setMyInfo({...myInfo, status: status});
+        socketManager.join(myInfo);
+        updateMyStatus(myInfo.status);
+    }, []);
+    
+    useEffect(() => {
+        socketManager.changeStatus(myInfo);
+    }, [myInfo])
+
+    function updateMyStatus (status) {
+        dispatch(changeStatus({status: status}));
         switch(status) {
             case 'working': 
                 setLabel('업무중')
@@ -60,6 +78,10 @@ export default function MyInfoBox({ myInfo, setMyInfo }) {
                 setLabel('퇴근')
                 setSelectColor('default')
                 break;
+            default :
+                setLabel('업무중')
+                setSelectColor('primary')
+                break;
         }
     }
 
@@ -73,43 +95,41 @@ export default function MyInfoBox({ myInfo, setMyInfo }) {
             >
             </CardHeader>
             <CardContent className={styles.cardContent}>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={2}>
+                <Grid item xs="auto">
                     <Button
-                        variant={myInfo.status == 'working' ? "contained" : "none"}
+                        variant={myInfo.status === 'working' ? "contained" : "text"}
                         color={selectColor}
-                        onClick={() => {changeMyStatus('working')}}
+                        onClick={() => {updateMyStatus('working')}}
                     >업무</Button>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs="auto">
                     <Button 
-                        variant={myInfo.status == 'meeting' ? "contained" : "none"}
+                        variant={myInfo.status === 'meeting' ? "contained" : "text"}
                         color={selectColor}
-                        onClick={() => {changeMyStatus('meeting')}}
+                        onClick={() => {updateMyStatus('meeting')}}
                     >회의</Button>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs="auto">
                     <Button 
-                        variant={myInfo.status == 'rest' ? "contained" : "none"}
+                        variant={myInfo.status === 'rest' ? "contained" : "text"}
                         color={selectColor}
-                        onClick={() => {changeMyStatus('rest')}}
+                        onClick={() => {updateMyStatus('rest')}}
                     >휴식</Button>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs="auto">
                     <Button 
-                        variant={myInfo.status == 'meal' ? "contained" : "none"}
+                        variant={myInfo.status === 'meal' ? "contained" : "text"}
                         color={selectColor}
-                        onClick={() => {changeMyStatus('meal')}}
+                        onClick={() => {updateMyStatus('meal')}}
                     >식사</Button>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs="auto">
                     <Button 
-                        variant={myInfo.status == 'offwork' ? "contained" : "none"}
+                        variant={myInfo.status === 'offwork' ? "contained" : "text"}
                         color={selectColor}
-                        onClick={() => {changeMyStatus('offwork')}}
+                        onClick={() => {updateMyStatus('offwork')}}
                     >퇴근</Button>
                 </Grid>
-                <Grid item xs={1}></Grid>
             </CardContent>
 
         </Card>
