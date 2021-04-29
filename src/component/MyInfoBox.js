@@ -1,10 +1,12 @@
 import { Avatar, Button, Card, CardContent, CardHeader, Chip, Grid, makeStyles } from '@material-ui/core';
 import { deepOrange } from '@material-ui/core/colors';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import socketManager from '../socket/socketManager';
 import { changeStatus, setMyInfo } from '../store/myInfo/myInfo.reducer'
+import { addTimeline, changeTimeline, clear } from '../store/workingHours/workingHours.reducer';
 import utils from '../utils/utils';
+import statusList from '../dto/statusList';
 
 const useStyles = makeStyles((theme) => ({
     orange: {
@@ -32,11 +34,32 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    // Remember the latest function.
+    useEffect(() => {
+        savedCallback.current = callback;
+    }, [callback]);
+
+    // Set up the interval.
+    useEffect(() => {
+        function tick() {
+            savedCallback.current();
+        }
+        if (delay !== null) {
+            let id = setInterval(tick, delay);
+            return () => clearInterval(id);
+        }
+    }, [delay]);
+}
+
 export default function MyInfoBox({ teamId, userName }) {
     const styles = useStyles();
     const [label, setLabel] = useState('');
     const [selectColor, setSelectColor] = useState('primary');
     const myInfo = useSelector(state => state.myInfo);
+    const workingHours = useSelector(state => state.workingHours);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -50,39 +73,68 @@ export default function MyInfoBox({ teamId, userName }) {
         socketManager.join(myInfo);
         updateMyStatus(myInfo.status);
     }, []);
-    
+
     useEffect(() => {
         socketManager.changeStatus(myInfo);
     }, [myInfo])
 
-    function updateMyStatus (status) {
-        dispatch(changeStatus({status: status}));
-        switch(status) {
-            case 'working': 
-                setLabel('업무중')
-                setSelectColor('primary')
-                break;
-            case 'meeting': 
-                setLabel('회의중')
-                setSelectColor('primary')
-                break;
-            case 'meal': 
-                setLabel('식사중')
-                setSelectColor('secondary')
-                break;
-            case 'rest': 
-                setLabel('휴식중')
-                setSelectColor('secondary')
-                break;
-            case 'offwork': 
-                setLabel('퇴근')
-                setSelectColor('default')
-                break;
-            default :
-                setLabel('업무중')
-                setSelectColor('primary')
-                break;
+    useEffect(() => {
+        if (getFullDate(new Date(workingHours.startDate)) !== getFullDate(new Date)) {
+            dispatch(clear());
         }
+    }, [])
+
+    useInterval(() => {
+        console.log({
+            width: calcDateWidth(),
+            index: workingHours.currentIndex,
+            lastDate: new Date().toISOString()
+        })
+        dispatch(changeTimeline({
+            width: calcDateWidth(),
+            index: workingHours.currentIndex,
+            lastDate: new Date().toISOString()
+        }))
+    }, [1000])
+
+    function setTimeline(status) {
+        const width = calcDateWidth(true);
+        dispatch(addTimeline({
+            status: status,
+            timeline: {
+                status: status,
+                color: statusList.getStatus(status).lineColor,
+                width: width,
+                startDate: new Date().toISOString(),
+                lastDate: new Date().toISOString()
+            }
+        }))
+    }
+
+    function calcDateWidth(isNew) {
+        const lastTimeline = workingHours.timeline[workingHours.currentIndex];
+        const totalTime = new Date(workingHours.endDate) - new Date(workingHours.startDate);
+        if (lastTimeline) { // 있으면
+            if (isNew) {
+                return ((new Date() - new Date(lastTimeline.lastDate)) / totalTime * 100).toFixed(1);
+            } else {
+                return ((new Date() - new Date(lastTimeline.startDate)) / totalTime * 100).toFixed(1);
+            }
+        } else {
+            return ((new Date() - new Date(workingHours.startDate)) / totalTime * 100).toFixed(1);
+        }
+    }
+
+    function getFullDate(date) {
+        return date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString();
+    }
+
+    function updateMyStatus(status) {
+        dispatch(changeStatus({ status: status }));
+        setTimeline(status);
+        const statusInfo = statusList.getStatus(status);
+        setLabel(statusInfo.label);
+        setSelectColor(statusInfo.buttonColor);
     }
 
     return (
@@ -95,41 +147,16 @@ export default function MyInfoBox({ teamId, userName }) {
             >
             </CardHeader>
             <CardContent className={styles.cardContent}>
-                <Grid item xs="auto">
-                    <Button
-                        variant={myInfo.status === 'working' ? "contained" : "text"}
-                        color={selectColor}
-                        onClick={() => {updateMyStatus('working')}}
-                    >업무</Button>
-                </Grid>
-                <Grid item xs="auto">
-                    <Button 
-                        variant={myInfo.status === 'meeting' ? "contained" : "text"}
-                        color={selectColor}
-                        onClick={() => {updateMyStatus('meeting')}}
-                    >회의</Button>
-                </Grid>
-                <Grid item xs="auto">
-                    <Button 
-                        variant={myInfo.status === 'rest' ? "contained" : "text"}
-                        color={selectColor}
-                        onClick={() => {updateMyStatus('rest')}}
-                    >휴식</Button>
-                </Grid>
-                <Grid item xs="auto">
-                    <Button 
-                        variant={myInfo.status === 'meal' ? "contained" : "text"}
-                        color={selectColor}
-                        onClick={() => {updateMyStatus('meal')}}
-                    >식사</Button>
-                </Grid>
-                <Grid item xs="auto">
-                    <Button 
-                        variant={myInfo.status === 'offwork' ? "contained" : "text"}
-                        color={selectColor}
-                        onClick={() => {updateMyStatus('offwork')}}
-                    >퇴근</Button>
-                </Grid>
+                {(statusList.list.map((item, index) => (
+                        <Grid key={index} item xs="auto">
+                            <Button
+                                variant={myInfo.status === item.status ? "contained" : "text"}
+                                color={selectColor}
+                                onClick={() => { updateMyStatus(item.status) }}
+                            >{item.label}</Button>
+                        </Grid>
+                    )
+                ))}
             </CardContent>
 
         </Card>

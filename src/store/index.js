@@ -4,15 +4,17 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import myInfo from "./myInfo/myInfo.reducer";
+import workingHours from "./workingHours/workingHours.reducer";
 
 const persistConfig = {
     key: "root",
     storage,
-    whitelist: ["myInfo"]
+    whitelist: ["myInfo", "workingHours"]
 };
 
 const rootReducer = combineReducers({
-    myInfo
+    myInfo,
+    workingHours
 });
 
 export default persistReducer(persistConfig, rootReducer);

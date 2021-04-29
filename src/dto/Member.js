@@ -1,5 +1,3 @@
-
-
 export default class Member {
     constructor(memberInfo) {
         this.id = memberInfo.id;

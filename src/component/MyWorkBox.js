@@ -1,5 +1,6 @@
 import { Box, makeStyles } from '@material-ui/core';
-import React, { useState } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import LineProgress from './dataDisplay/LineProgress'
 
 const useStyles = makeStyles({
@@ -10,24 +11,13 @@ const useStyles = makeStyles({
     }
 });
 
-export default function MyWorkBox({}) {
+export default function MyWorkBox() {
     const styles = useStyles();
-    const [lines, setLines] = useState([{
-        color: '#C6BDFB',
-        width: 15,
-        isFirst: true,
-    }, {
-        color: '#FFCBC0',
-        width: 10
-    }, {
-        color: '#C6BDFB',
-        width: 35,
-        isLast: true
-    }]);
+    const workingHours = useSelector(state => state.workingHours);
 
     return (
         <Box>
-            <LineProgress className={styles.progress} lines={lines}></LineProgress>
+            <LineProgress className={styles.progress} timeline={workingHours.timeline}></LineProgress>
         </Box>
     )
 }

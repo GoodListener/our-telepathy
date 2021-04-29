@@ -7,7 +7,13 @@ const useStyles = makeStyles({
         width: `${props.line.width}%`,
         height: '100%',
         display: 'inline-block',
-        borderRadius: props.line.isFirst ? '0.3rem 0 0 0.3rem' : props.line.isLast ? '0 0.3rem 0.3rem 0' : '0',
+        "&:first-child": {
+            borderRadius: '0.3rem 0 0 0.3rem'
+        },
+        "&:last-child": {
+            minWidth: '3px',
+            borderRadius: '0 0.3rem 0.3rem 0'
+        }
 
     })
 });
