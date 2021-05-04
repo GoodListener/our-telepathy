@@ -79,50 +79,27 @@ export default function MyInfoBox({ teamId, userName }) {
     }, [myInfo])
 
     useEffect(() => {
-        if (getFullDate(new Date(workingHours.startDate)) !== getFullDate(new Date)) {
+        if (getFullDate(new Date(workingHours.workDate)) !== getFullDate(new Date)) {
             dispatch(clear());
         }
     }, [])
 
     useInterval(() => {
-        console.log({
-            width: calcDateWidth(),
-            index: workingHours.currentIndex,
-            lastDate: new Date().toISOString()
-        })
         dispatch(changeTimeline({
-            width: calcDateWidth(),
             index: workingHours.currentIndex,
             lastDate: new Date().toISOString()
         }))
-    }, [1000])
+    }, 1000)
 
     function setTimeline(status) {
-        const width = calcDateWidth(true);
         dispatch(addTimeline({
             status: status,
             timeline: {
                 status: status,
                 color: statusList.getStatus(status).lineColor,
-                width: width,
-                startDate: new Date().toISOString(),
-                lastDate: new Date().toISOString()
+                startDate: new Date().toISOString()
             }
         }))
-    }
-
-    function calcDateWidth(isNew) {
-        const lastTimeline = workingHours.timeline[workingHours.currentIndex];
-        const totalTime = new Date(workingHours.endDate) - new Date(workingHours.startDate);
-        if (lastTimeline) { // 있으면
-            if (isNew) {
-                return ((new Date() - new Date(lastTimeline.lastDate)) / totalTime * 100).toFixed(1);
-            } else {
-                return ((new Date() - new Date(lastTimeline.startDate)) / totalTime * 100).toFixed(1);
-            }
-        } else {
-            return ((new Date() - new Date(workingHours.startDate)) / totalTime * 100).toFixed(1);
-        }
     }
 
     function getFullDate(date) {
