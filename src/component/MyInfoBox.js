@@ -1,12 +1,13 @@
 import { Avatar, Button, Card, CardContent, CardHeader, Chip, Grid, makeStyles } from '@material-ui/core';
 import { deepOrange } from '@material-ui/core/colors';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import socketManager from '../socket/socketManager';
 import { changeStatus, setMyInfo } from '../store/myInfo/myInfo.reducer'
 import { addTimeline, changeTimeline, clear } from '../store/workingHours/workingHours.reducer';
 import utils from '../utils/utils';
 import statusList from '../dto/statusList';
+import useInterval from '../customHook/useInterval';
 
 const useStyles = makeStyles((theme) => ({
     orange: {
@@ -33,26 +34,6 @@ const useStyles = makeStyles((theme) => ({
         color: '#282828'
     }
 }));
-
-function useInterval(callback, delay) {
-    const savedCallback = useRef();
-
-    // Remember the latest function.
-    useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 
 export default function MyInfoBox({ teamId, userName }) {
     const styles = useStyles();

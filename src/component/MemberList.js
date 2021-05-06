@@ -30,20 +30,20 @@ export default function MemberList({ offerToMember }) {
         }
     });
 
-    /**
-     * @param {Member} member
-     */
-     function addMember(member) {
+    function addMember(member) {
         setMemberList(memberList => [...memberList, member]);
     }
 
-    
+    /**
+     * 
+     * @param {string} id 
+     */
     function removeMember(id) {
         setMemberList(memberList => memberList.filter(member => {
             return member.id !== id;
         }));
     }
-    
+
     function updateMember(newMember) {
         const index = [...memberList].findIndex(member => {
             return member.id === newMember.id

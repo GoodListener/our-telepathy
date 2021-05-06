@@ -71,11 +71,6 @@ export default function Main() {
 
     function handleRemoteStreamAdded(id, event) {
         console.log(id, event);
-        // const member = [...memberList].find(member => member.id === id);
-        // if (member) {
-        //     member.stream = event.stream;
-        //     updateMember(member);
-        // }
     }
 
     function handleRemoteStreamRemoved(event) {

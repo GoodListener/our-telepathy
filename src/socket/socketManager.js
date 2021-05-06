@@ -19,12 +19,10 @@ class SocketManager {
      */
     onJoin(addMember, removeMember) {
         this.socket.on('myInfo', userInfo => {
-            console.log(userInfo);
             this.myInfo.id = userInfo.id;
         })
 
         this.socket.on('userList', userList => {
-            console.log(userList);
             userList.forEach(userInfo => {
                 addMember(userInfo);
             })
@@ -50,10 +48,6 @@ class SocketManager {
         return this.myInfo;
     }
 
-    /**
-     * 
-     * @param {Member} member 
-     */
     changeStatus(member) {
         this.socket.emit('changeStatus', member);
     }

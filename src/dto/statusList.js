@@ -1,4 +1,4 @@
-class Status {
+class StatusDTO {
     constructor(statusInfo) {
         this.status = statusInfo.status;
         this.buttonColor = statusInfo.buttonColor;
@@ -7,34 +7,34 @@ class Status {
     }
 }
 
-class StatusList {
+class StatusDTOList {
     constructor() {
         this.list = [
-            new Status({
+            new StatusDTO({
                 status: 'working',
                 buttonColor: 'primary',
                 lineColor: '#C6BDFB',
                 label: '업무중'
             }),
-            new Status({
+            new StatusDTO({
                 status: 'meeting',
                 buttonColor: 'primary',
                 lineColor: '#86B7E5',
                 label: '회의중'
             }),
-            new Status({
+            new StatusDTO({
                 status: 'meal',
                 buttonColor: 'secondary',
                 lineColor: '#75CD83',
                 label: '식사중'
             }),
-            new Status({
+            new StatusDTO({
                 status: 'rest',
                 buttonColor: 'secondary',
                 lineColor: '#FFCBC0',
                 label: '휴식중'
             }),
-            new Status({
+            new StatusDTO({
                 status: 'offwork',
                 buttonColor: 'default',
                 lineColor: '#8F95A4',
@@ -46,11 +46,11 @@ class StatusList {
     /**
      * 
      * @param {String} status 
-     * @returns {Status}
+     * @returns {StatusDTO}
      */
     getStatus(status) {
         const statusInfo = this.list.find(item => item.status === status);
-        return statusInfo ? statusInfo : new Status({
+        return statusInfo ? statusInfo : new StatusDTO({
             status: 'default',
             buttonColor: 'default',
             lineColor: '#eee',
@@ -61,4 +61,4 @@ class StatusList {
 
 
 
-export default new StatusList();
+export default new StatusDTOList();

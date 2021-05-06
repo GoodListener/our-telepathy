@@ -1,6 +1,9 @@
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Grid, makeStyles, Typography } from '@material-ui/core';
 import { deepOrange } from '@material-ui/core/colors';
-import React, { useEffect, useState } from 'react';
+import statusList from '../dto/statusList'
+import CallDialog from './callDialog/CallDialog';
 
 const useStyles = makeStyles((theme) => ({
     orange: {
@@ -24,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Member({member}) {
     const styles = useStyles();
+    const [open, setOpen] = useState(false);
     const [label, setLabel] = useState('');
     const [selectColor, setSelectColor] = useState('primary');
 
@@ -32,32 +36,17 @@ export default function Member({member}) {
     });
 
     function changeStatus (status) {
-        switch(status) {
-            case 'working': 
-                setLabel('업무중')
-                setSelectColor('primary')
-                break;
-            case 'meeting': 
-                setLabel('회의중')
-                setSelectColor('primary')
-                break;
-            case 'meal': 
-                setLabel('식사중')
-                setSelectColor('secondary')
-                break;
-            case 'rest': 
-                setLabel('휴식중')
-                setSelectColor('secondary')
-                break;
-            case 'offwork': 
-                setLabel('퇴근')
-                setSelectColor('default')
-                break;
-            default :
-                setLabel('업무중')
-                setSelectColor('primary')
-                break;
-        }
+        const statusInfo = statusList.getStatus(status);
+        setLabel(statusInfo.label);
+        setSelectColor(statusInfo.buttonColor);
+    }
+
+    function handleClickCallDialogOpen() {
+        setOpen(true);
+    }
+
+    function handleClose() {
+        setOpen(false);
     }
 
     return <Grid item xs={6} md={3}>
@@ -76,10 +65,16 @@ export default function Member({member}) {
                     variant="contained"
                     color="primary"
                     className={styles.cardAction}
+                    onClick={handleClickCallDialogOpen}
                 >
                     Call
                 </Button>
             </CardActions>
+            <CallDialog member={member} open={open} onClose={handleClose}></CallDialog>
         </Card>
     </Grid>
+}
+
+Member.propTypes = {
+    member: PropTypes.any.isRequired
 }
