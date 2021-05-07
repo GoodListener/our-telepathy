@@ -1,22 +1,20 @@
 {
   "files": {
-    "main.css": "/our-telepathy/static/css/main.5ecd60fb.chunk.css",
-    "main.js": "/our-telepathy/static/js/main.de2905d5.chunk.js",
-    "main.js.map": "/our-telepathy/static/js/main.de2905d5.chunk.js.map",
-    "runtime-main.js": "/our-telepathy/static/js/runtime-main.b0182171.js",
-    "runtime-main.js.map": "/our-telepathy/static/js/runtime-main.b0182171.js.map",
-    "static/js/2.28738152.chunk.js": "/our-telepathy/static/js/2.28738152.chunk.js",
-    "static/js/2.28738152.chunk.js.map": "/our-telepathy/static/js/2.28738152.chunk.js.map",
+    "main.css": "/our-telepathy/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/our-telepathy/static/js/main.339443d8.chunk.js",
+    "main.js.map": "/our-telepathy/static/js/main.339443d8.chunk.js.map",
+    "runtime-main.js": "/our-telepathy/static/js/runtime-main.a40d6429.js",
+    "runtime-main.js.map": "/our-telepathy/static/js/runtime-main.a40d6429.js.map",
+    "static/js/2.8d129b08.chunk.js": "/our-telepathy/static/js/2.8d129b08.chunk.js",
+    "static/js/2.8d129b08.chunk.js.map": "/our-telepathy/static/js/2.8d129b08.chunk.js.map",
     "index.html": "/our-telepathy/index.html",
-    "precache-manifest.0f737af44750f549a60a9b0b979f5084.js": "/our-telepathy/precache-manifest.0f737af44750f549a60a9b0b979f5084.js",
-    "service-worker.js": "/our-telepathy/service-worker.js",
-    "static/css/main.5ecd60fb.chunk.css.map": "/our-telepathy/static/css/main.5ecd60fb.chunk.css.map",
-    "static/js/2.28738152.chunk.js.LICENSE.txt": "/our-telepathy/static/js/2.28738152.chunk.js.LICENSE.txt"
+    "static/css/main.6dea0f05.chunk.css.map": "/our-telepathy/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.8d129b08.chunk.js.LICENSE.txt": "/our-telepathy/static/js/2.8d129b08.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.b0182171.js",
-    "static/js/2.28738152.chunk.js",
-    "static/css/main.5ecd60fb.chunk.css",
-    "static/js/main.de2905d5.chunk.js"
+    "static/js/runtime-main.a40d6429.js",
+    "static/js/2.8d129b08.chunk.js",
+    "static/css/main.6dea0f05.chunk.css",
+    "static/js/main.339443d8.chunk.js"
   ]
 }
