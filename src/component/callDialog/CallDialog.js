@@ -5,6 +5,8 @@ import { deepOrange } from '@material-ui/core/colors';
 import { Avatar, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { CallEnd, Mic, MicOff } from '@material-ui/icons';
+import socketManager from '../../socket/socketManager';
+import rtc from '../../rtc/rtc';
 
 const useStyles = makeStyles((theme) => ({
     orange: {
@@ -39,6 +41,20 @@ export default function CallDialog(props) {
     const [micOn, setMicOn] = useState(false);
     const { member, onClose, open } = props;
 
+    useEffect(() => {
+        open && offerToMember(member);
+    })
+
+    function offerToMember(member) {
+        rtc.createOffer(member.id)
+            .then(({ pc, sessionDescription }) => {
+                pc.onicecandidate = (event) => { handleIceCandidate(member.id, event) };
+                pc.onaddstream = (event) => { handleRemoteStreamAdded(member.id, event); };
+                pc.onremovestream = handleRemoteStreamRemoved;
+                socketManager.sendMessageToUser('offer', member.id, sessionDescription);
+            });
+    }
+
     function handleMicOn() {
         setMicOn(!micOn);
     }
@@ -48,6 +64,20 @@ export default function CallDialog(props) {
         setTimeout(() => {
             onClose();
         }, 3000);
+    }
+
+    function handleIceCandidate(id, event) {
+        if (event.candidate) {
+            socketManager.sendMessageToUser('candidate', id, event.candidate);
+        }
+    }
+
+    function handleRemoteStreamAdded(id, event) {
+        console.log(id, event);
+    }
+
+    function handleRemoteStreamRemoved(event) {
+        console.log(event);
     }
 
     return (

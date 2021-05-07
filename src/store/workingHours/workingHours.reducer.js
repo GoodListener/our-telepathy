@@ -51,7 +51,7 @@ export default function workingHours(state = initialState, action) {
             return {
                 ...state,
                 totalTime: action.totalTime,
-                stateDate: action.startDate ? action.stateDate : state.startDate,
+                startDate: action.startDate ? action.startDate : state.startDate,
                 endDate: action.endDate ? action.endDate : state.endDate,
                 timeline: state.timeline.map(item => {
                     return {

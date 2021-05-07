@@ -26,16 +26,6 @@ export default function Main() {
         }
     });
 
-    function offerToMember(user) {
-        rtc.createOffer(user.id)
-            .then(({ pc, sessionDescription }) => {
-                pc.onicecandidate = (event) => { handleIceCandidate(user.id, event) };
-                pc.onaddstream = (event) => { handleRemoteStreamAdded(user.id, event); };
-                pc.onremovestream = handleRemoteStreamRemoved;
-                socketManager.sendMessageToUser('offer', user.id, sessionDescription);
-            });
-    }
-
     function receiveDataMessage(data) {
         switch (data.type) {
             case 'offer':
@@ -96,9 +86,7 @@ export default function Main() {
                     </MyWorkBox>
                 </Grid>
             </Grid>
-            <MemberList className={styles.mainBox}
-                offerToMember={offerToMember}
-            ></MemberList>
+            <MemberList className={styles.mainBox}></MemberList>
         </Container>
     );
 }

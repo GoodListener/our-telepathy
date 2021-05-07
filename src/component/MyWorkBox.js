@@ -1,6 +1,7 @@
 import { Box, makeStyles, TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeTotalTime } from '../store/workingHours/workingHours.reducer';
 import LineProgress from './dataDisplay/LineProgress'
 
 const useStyles = makeStyles({
@@ -13,9 +14,10 @@ const useStyles = makeStyles({
 
 export default function MyWorkBox() {
     const styles = useStyles();
-    const [startTime, setStartTime] = useState("09:00");
-    const [endTime, setEndTime] = useState("18:00");
     const workingHours = useSelector(state => state.workingHours);
+    const [startTime, setStartTime] = useState(getFormattedTime(workingHours.startDate));
+    const [endTime, setEndTime] = useState(getFormattedTime(workingHours.endDate));
+    const dispatch = useDispatch();
 
     function handleStartTime(e) {
         setStartTime(e.target.value);
@@ -30,7 +32,14 @@ export default function MyWorkBox() {
         const endDate = new Date();
         startDate.setHours(startTime.split(':')[0], startTime.split(':')[1]);
         endDate.setHours(endTime.split(':')[0], endTime.split(':')[1]);
-        console.log(startDate, endDate);
+        const totalTime = endDate - startDate;
+        if (totalTime > 0) {
+            dispatch(changeTotalTime({
+                totalTime: totalTime,
+                startDate: startDate,
+                endDate: endDate
+            }))
+        }
     }, [startTime, endTime])
 
     return (
@@ -39,7 +48,7 @@ export default function MyWorkBox() {
                 id="startTime"
                 label="출근"
                 type="time"
-                defaultValue="09:00"
+                defaultValue={startTime}
                 inputProps={{
                     step: 60,
                 }}
@@ -49,7 +58,7 @@ export default function MyWorkBox() {
                 id="endTime"
                 label="퇴근"
                 type="time"
-                defaultValue="18:00"
+                defaultValue={endTime}
                 inputProps={{
                     step: 60
                 }}
@@ -58,4 +67,10 @@ export default function MyWorkBox() {
             <LineProgress className={styles.progress} timeline={workingHours.timeline}></LineProgress>
         </Box>
     )
+}
+
+function getFormattedTime(date) {
+    const hours = new Date(date).getHours();
+    const minutes = new Date(date).getMinutes();
+    return (hours > 9 ? hours : '0' + hours) + ":" + (minutes > 9 ? minutes : '0' + minutes);
 }

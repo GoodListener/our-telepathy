@@ -10,7 +10,7 @@ const useStyles = makeStyles({
     }
 })
 
-export default function MemberList({ offerToMember }) {
+export default function MemberList() {
     const [memberList, setMemberList] = useState([]);
     const styles = useStyles();
 
