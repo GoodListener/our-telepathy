@@ -1,5 +1,6 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Tooltip } from '@material-ui/core';
 import React from 'react';
+import statusList from '../../dto/statusList'
 
 const useStyles = makeStyles({
     root: (props) => ({
@@ -13,12 +14,23 @@ const useStyles = makeStyles({
         "&:last-child": {
             minWidth: '3px',
             borderRadius: '0 0.3rem 0.3rem 0'
+        },
+        "&:hover": {
+            boxShadow: `0 0 2px 2px ${props.line.color}88`
         }
 
     })
 });
 
+const useStylesTooltip = makeStyles({
+    tooltip: (props) => ({
+        backgroundColor: props.line.color
+    })
+})
+
 export default function Line(props) {
     const styles = useStyles(props);
-    return <span className={styles.root}></span>
+    const classes = useStylesTooltip(props);
+    const label = statusList.getStatus(props.line.status).label;
+    return <Tooltip title={label} classes={classes}><span className={styles.root}></span></Tooltip>
 }
