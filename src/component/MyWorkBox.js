@@ -48,27 +48,29 @@ export default function MyWorkBox() {
     }, [startTime, endTime])
 
     return (
-        <Box className={styles.workingInputHoursBox}>
-            <TextField
-                id="startTime"
-                label="출근"
-                type="time"
-                defaultValue={startTime}
-                inputProps={{
-                    step: 60,
-                }}
-                onChange={handleStartTime}
-            />
-            <TextField
-                id="endTime"
-                label="퇴근"
-                type="time"
-                defaultValue={endTime}
-                inputProps={{
-                    step: 60
-                }}
-                onChange={handleEndTime}
-            />
+        <Box>
+            <Box className={styles.workingInputHoursBox}>
+                <TextField
+                    id="startTime"
+                    label="출근"
+                    type="time"
+                    defaultValue={startTime}
+                    inputProps={{
+                        step: 60,
+                    }}
+                    onChange={handleStartTime}
+                />
+                <TextField
+                    id="endTime"
+                    label="퇴근"
+                    type="time"
+                    defaultValue={endTime}
+                    inputProps={{
+                        step: 60
+                    }}
+                    onChange={handleEndTime}
+                />
+            </Box>
             <LineProgress className={styles.progress} timeline={workingHours.timeline}></LineProgress>
         </Box>
     )
