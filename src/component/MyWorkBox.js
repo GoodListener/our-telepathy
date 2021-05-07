@@ -8,6 +8,11 @@ const useStyles = makeStyles({
         height: "1.5rem",
         backgroundColor: "#fff",
         borderRadius: '0.3rem'
+    },
+    workingInputHoursBox: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginBottom: '5px'
     }
 });
 
@@ -30,31 +35,32 @@ export default function MyWorkBox() {
         const endDate = new Date();
         startDate.setHours(startTime.split(':')[0], startTime.split(':')[1]);
         endDate.setHours(endTime.split(':')[0], endTime.split(':')[1]);
-        console.log(startDate, endDate);
     }, [startTime, endTime])
 
     return (
         <Box>
-            <TextField
-                id="startTime"
-                label="출근"
-                type="time"
-                defaultValue="09:00"
-                inputProps={{
-                    step: 60,
-                }}
-                onChange={handleStartTime}
-            />
-            <TextField
-                id="endTime"
-                label="퇴근"
-                type="time"
-                defaultValue="18:00"
-                inputProps={{
-                    step: 60
-                }}
-                onChange={handleEndTime}
-            />
+            <Box className={styles.workingInputHoursBox}>
+                <TextField
+                    id="startTime"
+                    label="출근"
+                    type="time"
+                    defaultValue="09:00"
+                    inputProps={{
+                        step: 60,
+                    }}
+                    onChange={handleStartTime}
+                />
+                <TextField
+                    id="endTime"
+                    label="퇴근"
+                    type="time"
+                    defaultValue="18:00"
+                    inputProps={{
+                        step: 60
+                    }}
+                    onChange={handleEndTime}
+                />
+            </Box>
             <LineProgress className={styles.progress} timeline={workingHours.timeline}></LineProgress>
         </Box>
     )

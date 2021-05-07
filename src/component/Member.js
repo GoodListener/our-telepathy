@@ -50,7 +50,7 @@ export default function Member({member}) {
     }
 
     return <Grid item xs={6} md={3}>
-        <Card>
+        <Card elevation={4}>
             <CardHeader
                 className={styles.cardHeader}
                 action={<Chip className={styles.cardStatusChip} color={selectColor} label={label} />}

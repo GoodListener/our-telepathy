@@ -32,5 +32,9 @@ export default function Line(props) {
     const styles = useStyles(props);
     const classes = useStylesTooltip(props);
     const label = statusList.getStatus(props.line.status).label;
-    return <Tooltip title={label} classes={classes}><span className={styles.root}></span></Tooltip>
+    const startDate = new Date(props.line.startDate);
+    const startTime = startDate.getHours() + ":" + startDate.getMinutes();
+    const lastDate = new Date(props.line.lastDate);
+    const lastTime = lastDate.getHours() + ":" + lastDate.getMinutes();
+    return <Tooltip title={label + ' (' + startTime + ' ~ ' + lastTime + ')'} classes={classes}><span className={styles.root}></span></Tooltip>
 }
