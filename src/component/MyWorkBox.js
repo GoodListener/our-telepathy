@@ -9,6 +9,11 @@ const useStyles = makeStyles({
         height: "1.5rem",
         backgroundColor: "#fff",
         borderRadius: '0.3rem'
+    },
+    workingInputHoursBox: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginBottom: '5px'
     }
 });
 
@@ -43,7 +48,7 @@ export default function MyWorkBox() {
     }, [startTime, endTime])
 
     return (
-        <Box>
+        <Box className={styles.workingInputHoursBox}>
             <TextField
                 id="startTime"
                 label="출근"

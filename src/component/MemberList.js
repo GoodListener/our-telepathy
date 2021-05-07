@@ -1,6 +1,7 @@
 import { Grid, makeStyles } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import socketManager from '../socket/socketManager';
+import EmptyMember from './EmptyMember';
 import Member from './Member';
 
 const useStyles = makeStyles({
@@ -63,5 +64,6 @@ export default function MemberList() {
 
     return <Grid container spacing={3} className={styles.memberBox}>
         {memberList.map(member => <Member key={member.id} member={member}></Member>)}
+        <EmptyMember></EmptyMember>
     </Grid>
 }
