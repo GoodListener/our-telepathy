@@ -4,6 +4,8 @@ import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Grid,
 import { deepOrange } from '@material-ui/core/colors';
 import statusList from '../dto/statusList'
 import CallDialog from './callDialog/CallDialog';
+import socketManager from '../socket/socketManager';
+import rtc from '../rtc/rtc';
 
 const useStyles = makeStyles((theme) => ({
     orange: {
@@ -29,11 +31,37 @@ export default function Member({member}) {
     const styles = useStyles();
     const [open, setOpen] = useState(false);
     const [label, setLabel] = useState('');
+    const [stream, setStream] = useState(null);
     const [selectColor, setSelectColor] = useState('primary');
 
     useEffect(() => {
         changeStatus(member.status);
     });
+
+    function offerToMember(member) {
+        rtc.createOffer(member.id)
+            .then(({ pc, sessionDescription }) => {
+                pc.onicecandidate = (event) => { handleIceCandidate(member.id, event) };
+                pc.onaddstream = (event) => { handleRemoteStreamAdded(member.id, event); };
+                pc.onremovestream = handleRemoteStreamRemoved;
+                socketManager.sendMessageToUser('offer', member.id, sessionDescription);
+            });
+    }
+
+    function handleIceCandidate(id, event) {
+        if (event.candidate) {
+            socketManager.sendMessageToUser('candidate', id, event.candidate);
+        }
+    }
+
+    function handleRemoteStreamAdded(id, event) {
+        console.log(id, event);
+        setStream(event.stream);
+    }
+
+    function handleRemoteStreamRemoved(event) {
+        console.log(event);
+    }
 
     function changeStatus (status) {
         const statusInfo = statusList.getStatus(status);
@@ -70,7 +98,7 @@ export default function Member({member}) {
                     Call
                 </Button>
             </CardActions>
-            <CallDialog member={member} open={open} onClose={handleClose}></CallDialog>
+            <CallDialog type="offer" member={member} open={open} onClose={handleClose} connect={offerToMember} stream={stream}></CallDialog>
         </Card>
     </Grid>
 }

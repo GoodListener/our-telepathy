@@ -5,8 +5,7 @@ import { deepOrange } from '@material-ui/core/colors';
 import { Avatar, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { CallEnd, Mic, MicOff } from '@material-ui/icons';
-import socketManager from '../../socket/socketManager';
-import rtc from '../../rtc/rtc';
+import AudioControl from '../audio/AudioControl';
 
 const useStyles = makeStyles((theme) => ({
     orange: {
@@ -39,24 +38,20 @@ export default function CallDialog(props) {
     const styles = useStyles();
     const [title, setTitle] = useState('연결중');
     const [micOn, setMicOn] = useState(false);
-    const { member, onClose, open } = props;
+    const { type, member, onClose, open, connect, stream } = props;
 
     useEffect(() => {
-        open && offerToMember(member);
+        if (type === 'offer') {
+            open && connect(member);
+        }
     })
-
-    function offerToMember(member) {
-        rtc.createOffer(member.id)
-            .then(({ pc, sessionDescription }) => {
-                pc.onicecandidate = (event) => { handleIceCandidate(member.id, event) };
-                pc.onaddstream = (event) => { handleRemoteStreamAdded(member.id, event); };
-                pc.onremovestream = handleRemoteStreamRemoved;
-                socketManager.sendMessageToUser('offer', member.id, sessionDescription);
-            });
-    }
 
     function handleMicOn() {
         setMicOn(!micOn);
+    }
+
+    function handleReceiveCall() {
+        connect(member);
     }
 
     function handleEndCall() {
@@ -64,20 +59,6 @@ export default function CallDialog(props) {
         setTimeout(() => {
             onClose();
         }, 3000);
-    }
-
-    function handleIceCandidate(id, event) {
-        if (event.candidate) {
-            socketManager.sendMessageToUser('candidate', id, event.candidate);
-        }
-    }
-
-    function handleRemoteStreamAdded(id, event) {
-        console.log(id, event);
-    }
-
-    function handleRemoteStreamRemoved(event) {
-        console.log(event);
     }
 
     return (
@@ -98,10 +79,18 @@ export default function CallDialog(props) {
                 </IconButton>
             </DialogContent>
             <DialogActions className={styles.dialogContent}>
-                <IconButton onClick={handleEndCall} color="secondary">
-                    <CallEnd />
-                </IconButton>
+                {
+                    type === 'answer' ?
+                        (<IconButton onClick={handleReceiveCall} color="primary">
+                            <CallEnd />
+                        </IconButton>)
+                        :
+                        (<IconButton onClick={handleEndCall} color="secondary">
+                            <CallEnd />
+                        </IconButton>)
+                }
             </DialogActions>
+            <AudioControl stream={stream}></AudioControl>
         </Dialog>
     );
 }
