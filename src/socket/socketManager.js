@@ -2,8 +2,8 @@ import { io } from 'socket.io-client';
 
 class SocketManager {
     constructor() {
-        // this.socket = io("https://flawless-psyche-307902.du.r.appspot.com");
-        this.socket = io("https://localhost:8080");
+        this.socket = io("https://flawless-psyche-307902.du.r.appspot.com");
+        // this.socket = io("https://localhost:8080");
         this.myInfo = null;
     }
 

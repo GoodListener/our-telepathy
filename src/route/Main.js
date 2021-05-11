@@ -45,8 +45,6 @@ export default function Main() {
                 rtc.receiveAnswer(data.id, data.message);
                 break;
             case 'candidate':
-                console.log('candidate');
-                console.log(data);
                 rtc.addIceCandidate(data.id, data.message);
                 break;
             default:
@@ -56,6 +54,8 @@ export default function Main() {
     }
 
     function receiveOffer(data) {
+        console.log('receiveOffer');
+        console.log(data);
         rtc.receiveOffer(data.id, data.message)
         .then(pc => {
             pc.onicecandidate = (event) => { handleIceCandidate(data.id, event) };
@@ -68,6 +68,7 @@ export default function Main() {
     }
 
     function handleIceCandidate(id, event) {
+        console.log(id, event);
         if (event.candidate) {
             socketManager.sendMessageToUser('candidate', id, event.candidate);
         }
@@ -84,6 +85,7 @@ export default function Main() {
 
     function handleClose() {
         setOpen(false);
+        rtc.destroyConnection(memberData.id);
     }
 
     return (

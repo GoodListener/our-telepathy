@@ -70,6 +70,11 @@ function receiveOffer(id, offer) {
     }
 }
 
+function destroyConnection(id) {
+    state.pcList[id].close();
+    state.pcList[id] = null;
+}
+
 function createAnswer(id) {
     return new Promise(res => {
         if (state.pcList[id].connectionState !== "connected") {
@@ -86,6 +91,7 @@ function receiveAnswer(id, answer) {
 }
 
 function addIceCandidate(id, candidate) {
+    console.log(state.pcList[id]);
     if (state.pcList[id])
         state.pcList[id].addIceCandidate(candidate);
 }
@@ -107,6 +113,7 @@ export default {
     getUserMedia,
     createOffer,
     createAnswer,
+    destroyConnection,
     receiveOffer,
     receiveAnswer,
     addIceCandidate,

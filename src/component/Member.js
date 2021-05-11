@@ -39,6 +39,8 @@ export default function Member({member}) {
     });
 
     function offerToMember(member) {
+        console.log('offerToMember');
+        console.log(member);
         rtc.createOffer(member.id)
             .then(({ pc, sessionDescription }) => {
                 pc.onicecandidate = (event) => { handleIceCandidate(member.id, event) };
@@ -49,6 +51,7 @@ export default function Member({member}) {
     }
 
     function handleIceCandidate(id, event) {
+        console.log(id, event);
         if (event.candidate) {
             socketManager.sendMessageToUser('candidate', id, event.candidate);
         }
@@ -75,6 +78,7 @@ export default function Member({member}) {
 
     function handleClose() {
         setOpen(false);
+        rtc.destroyConnection(member.id);
     }
 
     return <Grid item xs={6} md={3}>

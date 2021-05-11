@@ -38,20 +38,29 @@ export default function CallDialog(props) {
     const styles = useStyles();
     const [title, setTitle] = useState('연결중');
     const [micOn, setMicOn] = useState(false);
+    const [isConnect, setIsConnect] = useState(false);
     const { type, member, onClose, open, connect, stream } = props;
 
     useEffect(() => {
-        if (type === 'offer') {
+        if (type === 'offer' && !isConnect) {
             open && connect(member);
+            setIsConnect(true);
         }
-    })
+
+        if (!open) {
+            setIsConnect(false);
+        }
+    });
 
     function handleMicOn() {
         setMicOn(!micOn);
     }
 
     function handleReceiveCall() {
-        connect(member);
+        if (type === 'answer' && !isConnect) {
+            connect(member);
+            setIsConnect(true);
+        }
     }
 
     function handleEndCall() {
