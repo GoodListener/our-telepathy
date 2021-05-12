@@ -89,12 +89,12 @@ export default function CallDialog(props) {
             </DialogContent>
             <DialogActions className={styles.dialogContent}>
                 {
-                    type === 'answer' ?
-                        (<IconButton onClick={handleReceiveCall} color="primary">
+                    isConnect ?
+                        (<IconButton onClick={handleEndCall} color="secondary">
                             <CallEnd />
                         </IconButton>)
                         :
-                        (<IconButton onClick={handleEndCall} color="secondary">
+                        (<IconButton onClick={handleReceiveCall} color="primary">
                             <CallEnd />
                         </IconButton>)
                 }

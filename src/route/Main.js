@@ -54,8 +54,6 @@ export default function Main() {
     }
 
     function receiveOffer(data) {
-        console.log('receiveOffer');
-        console.log(data);
         rtc.receiveOffer(data.id, data.message)
         .then(pc => {
             pc.onicecandidate = (event) => { handleIceCandidate(data.id, event) };
@@ -68,14 +66,12 @@ export default function Main() {
     }
 
     function handleIceCandidate(id, event) {
-        console.log(id, event);
         if (event.candidate) {
             socketManager.sendMessageToUser('candidate', id, event.candidate);
         }
     }
 
     function handleRemoteStreamAdded(id, event) {
-        console.log(id, event);
         setStream(event.stream);
     }
 

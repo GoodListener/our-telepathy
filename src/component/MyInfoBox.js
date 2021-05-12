@@ -44,15 +44,15 @@ export default function MyInfoBox({ teamId, userName }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setMyInfo({
+        const newMyInfo = {
             id: myInfo.id ? myInfo.id : utils.getNewId(),
             name: userName,
             team: teamId,
             status: myInfo.status ? myInfo.status : 'working'
-        }))
-
-        socketManager.join(myInfo);
-        updateMyStatus(myInfo.status);
+        }
+        dispatch(setMyInfo(newMyInfo))
+        socketManager.join(newMyInfo);
+        updateMyStatus(newMyInfo.status);
     }, []);
 
     useEffect(() => {
