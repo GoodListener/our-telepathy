@@ -20,26 +20,26 @@ class SocketManager {
 
     /**
      * 
-     * @param {Function} addMember 
-     * @param {Function} removeMember 
+     * @param {Function} onAddMember 
+     * @param {Function} onRemoveMember 
      */
-    onJoin(addMember, removeMember) {
+    onJoin(onAddMember, onRemoveMember) {
         this.socket.on('myInfo', userInfo => {
             this.myInfo.id = userInfo.id;
         })
 
         this.socket.on('userList', userList => {
             userList.forEach(userInfo => {
-                addMember(userInfo);
+                onAddMember(userInfo);
             })
         })
 
         this.socket.on("joinedUser", member => {
-            addMember(member);
+            onAddMember(member);
         });
 
         this.socket.on("leavedUser", id => {
-            removeMember(id);
+            onRemoveMember(id);
         });
     }
 

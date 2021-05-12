@@ -1,8 +1,10 @@
 import { Grid, makeStyles } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import socketManager from '../socket/socketManager';
 import EmptyMember from './EmptyMember';
 import Member from './Member';
+import { changeStatus, addMember, removeMember } from '../store/memberList/memberList.reducer';
 
 const useStyles = makeStyles({
     memberBox: {
@@ -12,11 +14,12 @@ const useStyles = makeStyles({
 })
 
 export default function MemberList() {
-    const [memberList, setMemberList] = useState([]);
+    const memberList = useSelector(state => state.memberList);
+    const dispatch = useDispatch();
     const styles = useStyles();
 
     useEffect(() => {
-        socketManager.onJoin(addMember, removeMember);
+        socketManager.onJoin(onAddMember, onRemoveMember);
 
         return () => {
             socketManager.offJoin();
@@ -31,31 +34,24 @@ export default function MemberList() {
         }
     });
 
-    function addMember(member) {
-        setMemberList(memberList => [...memberList, member]);
+    function onAddMember(member) {
+        dispatch(addMember(member));
     }
 
     /**
      * 
      * @param {string} id 
      */
-    function removeMember(id) {
-        setMemberList(memberList => memberList.filter(member => {
-            return member.id !== id;
-        }));
+    function onRemoveMember(id) {
+        dispatch(removeMember(id));
     }
 
     function updateMember(newMember) {
-        const index = [...memberList].findIndex(member => {
-            return member.id === newMember.id
-        });
-        let newMemberList = [...memberList];
-        newMemberList[index] = newMember;
-        setMemberList(() => newMemberList);
+        dispatch(changeStatus(newMember))
     }
 
     function onChangeStatus(member) {
-        const foundMember = [...memberList].find(mem => mem.id === member.id);
+        const foundMember = memberList.find(mem => mem.id === member.id);
         if (foundMember) {
             foundMember.status = member.status;
             updateMember(foundMember);

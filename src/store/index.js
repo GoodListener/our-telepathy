@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 
 import myInfo from "./myInfo/myInfo.reducer";
 import workingHours from "./workingHours/workingHours.reducer";
+import memberList from './memberList/memberList.reducer';
 
 const persistConfig = {
     key: "root",
@@ -14,7 +15,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     myInfo,
-    workingHours
+    workingHours,
+    memberList
 });
 
 export default persistReducer(persistConfig, rootReducer);
